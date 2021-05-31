@@ -1,0 +1,156 @@
+openapi: 3.0.0
+
+info:
+  title: Main API
+  description: api for webserver
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api
+    description: dat-lab-webserver main server
+
+paths:
+  /server:
+    post:
+      summary: defined by 3.2
+      description: serving API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  properties:
+                    additionalProperties:
+                      type: object
+                inputs:
+                  $ref: '#/components/schemas/ServerRequestIOPuts'
+                outputs:
+                  $ref: '#/components/schemas/ServerRequestIOPuts'
+                experimentId:
+                  type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+
+  /data-serving:
+    post:
+      summary: defined by 4.2
+      description: data serving API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  properties:
+                    additionalProperties:
+                      type: object
+                inputs:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/DataInfo'
+                experimentId:
+                  type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataServingResponse'
+components:
+  schemas:
+    ServerResponse:
+      properties:
+        requestId:
+          type: string
+        experimentId:
+          type: string
+        apiId:
+          type: string
+        version:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          type: object
+      required:
+        - requestId
+        - apiId
+        - version
+        - code
+        - message
+        - data
+    DBInfo:
+      properties:
+        host:
+          type: string
+        port:
+          type: string
+        user:
+          type: string
+        password:
+          type: string
+        database:
+          type: string
+        tableName:
+          type: string
+    ServerRequestIOPuts:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+          dbInfo:
+            $ref: '#/components/schemas/DBInfo'
+    DataInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              additionalProperties:
+                type: object
+    DataServingResponse:
+      properties:
+        requestId:
+          type: string
+        experimentId:
+          type: string
+        apiId:
+          type: string
+        version:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataInfo'
+      required:
+        - requestId
+        - apiId
+        - version
+        - code
+        - message
+        - data
